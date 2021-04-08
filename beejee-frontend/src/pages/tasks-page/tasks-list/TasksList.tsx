@@ -9,6 +9,7 @@ import Space from "../../../shared/space";
 const TasksList = () => {
     const snap = useSnapshot(store);
     const {displayTasksIds, idTaskMap, totalPages, currentPage} = snap.tasks;
+    const {isLoggedIn} = snap.user;
     return <TasksListWrapper>
         <table>
             <thead>
@@ -22,7 +23,7 @@ const TasksList = () => {
             </thead>
             <tbody>
             {
-                displayTasksIds.map((id) => <TaskItem key={id} {...idTaskMap[id]}/>)
+                displayTasksIds.map((id) => <TaskItem key={id} editable={isLoggedIn} {...idTaskMap[id]}/>)
             }
             </tbody>
         </table>
