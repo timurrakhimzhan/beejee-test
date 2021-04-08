@@ -1,0 +1,23 @@
+{
+  "name": "beejee-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node ./dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^2.20.1",
+    "dotenv": "^8.2.0",
+    "fastify": "^3.14.1",
+    "jsonwebtoken": "^8.5.1",
+    "yup": "^0.32.9"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.1",
+    "@types/node": "^14.14.37",
+    "prisma": "^2.20.1"
+  }
+}
