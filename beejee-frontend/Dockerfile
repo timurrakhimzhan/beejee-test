@@ -2,4 +2,5 @@ FROM node:14-alpine
 WORKDIR /app
 COPY . ./
 RUN npm install
-CMD npm run build-build;
+EXPOSE 3000
+CMD npm run build-serve;
