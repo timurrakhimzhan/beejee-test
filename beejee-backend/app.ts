@@ -89,10 +89,11 @@ fastifyApp.addHook('preSerialization', async (request, response, payload) => {
 });
 
 fastifyApp.setErrorHandler<FastifyError>((async (error: FastifyError) => {
+    console.log(error);
     if(error instanceof CustomError) {
         return error;
     }
-    if(error instanceof FastifyError) {
+    if(error instanceof Error) {
         return new CustomError(error.message);
     }
     return new CustomError(error);
@@ -100,7 +101,7 @@ fastifyApp.setErrorHandler<FastifyError>((async (error: FastifyError) => {
 
 export default async function startApp() {
     try {
-        await fastifyApp.listen(PORT);
+        await fastifyApp.listen(PORT, '0.0.0.0');
         console.log('Listening on', PORT)
     } catch(err) {
         console.log(err);
