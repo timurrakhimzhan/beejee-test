@@ -24,7 +24,7 @@ export const createTaskSchema: FastifySchema = {
 export const editTaskSchema: FastifySchema = {
     body: yup.object({
         text: yup.string().required('Поле является обязательным для заполнения'),
-        status: yup.number().oneOf([10, 11], 'status должен быть одним из следующих значений: 10, 11').required('Поле является обязательным для заполнения')
+        status: yup.number().oneOf([1, 0], 'status должен быть одним из следующих значений: 1, 1').required('Поле является обязательным для заполнения')
     }),
     params: yup.object({
         id: yup.number().required('Не предоставлен id'),

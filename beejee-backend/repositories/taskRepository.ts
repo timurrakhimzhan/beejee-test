@@ -3,6 +3,10 @@ import prisma from "../prisma";
 import {TASKS_PER_PAGE} from "../configs";
 import { Prisma } from '@prisma/client';
 
+export const getTaskById = async (id: number) => {
+    return prisma.task.findFirst({where: {id}});
+}
+
 export const getTasks = async (sortField?: TaskSortField, sortDirection?: TaskSortDirection, page?: number) => {
     return prisma.task.findMany({
         orderBy: sortField ? [

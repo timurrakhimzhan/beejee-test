@@ -30,9 +30,11 @@ type TaskStatusNumber = 0 | 1 | 10 | 11;
 
 type EditTaskBody = {
     text: string;
-    status: 10 | 11;
+    status: 1 | 0;
 }
 
 type EditTaskParam = {
     id: number
 }
+
+type EditTaskReply = Omit<Task, 'status'> & {status: TaskStatusNumber};

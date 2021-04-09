@@ -17,8 +17,8 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
     const snap = useSnapshot(store);
     const {editingTaskId, idTaskMap, currentPage, sortField, sortDirection} = snap.tasks;
     const queryClient = useQueryClient();
-    const {register, handleSubmit, formState, getValues, setValue} = useForm<{text: string, status: '10' | '11'}>({
-        defaultValues: {text: '', status: '10'},
+    const {register, handleSubmit, formState, getValues, setValue} = useForm<{text: string, status: '1' | '0'}>({
+        defaultValues: {text: '', status: '1'},
     });
     const {errors} = formState;
     const [success, setSuccess] = useState(false);
@@ -29,10 +29,11 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
             return;
         }
         const {text, status} = getValues();
+        const statusNumber = status === '1' ? 1 : 0;
         try {
-            await API.task.actions.editTask(editingTaskId, {text, status: status === '10' ? 10 : 11 });
-            const task = idTaskMap[editingTaskId];
-            store.tasks.editTask({...task, text, status: status === '10' ? 10 : 11 });
+            const response = await API.task.actions.editTask(editingTaskId, {text, status: statusNumber });
+            const task = response.message;
+            store.tasks.editTask(task);
             setSuccess(true);
             await queryClient.fetchQuery([API_TASKS, {currentPage, sortDirection, sortField}]);
         } catch(error) {
@@ -45,9 +46,9 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
             return;
         }
         const task = idTaskMap[editingTaskId];
-        const status = task.status === 0 || task.status === 10 ? 10 : 11;
+        const status = task.status === 1 ? '1' : '0';
         setValue('text', task.text);
-        setValue('status', status === 10 ? '10' : '11');
+        setValue('status', status);
     }, [editingTaskId, idTaskMap, setValue]);
 
     const onSubmit = () => refetch();
@@ -64,10 +65,10 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
         <div className={'input-item'}>
             <label>Статус:</label>
             <select {...register('status', {required: 'Пустое имя пользователя'})}>
-                <option value={'10'}>
+                <option value={'0'}>
                     Не выполнено
                 </option>
-                <option value={'11'}>
+                <option value={'1'}>
                     Выполнено
                 </option>
             </select>

@@ -1,7 +1,7 @@
 import {CustomRouteGeneric} from "./types/controller";
 import {
     CreateTaskBody,
-    CreateTaskResponse, EditTaskBody, EditTaskParam,
+    CreateTaskResponse, EditTaskBody, EditTaskParam, EditTaskReply,
     GetTasksCountResponse,
     GetTasksQuery,
     GetTasksResponse
@@ -35,7 +35,7 @@ const routes: FastifyPluginCallback = async (app, opts, next) => {
         handler: taskController.createTask
     });
 
-    app.route<CustomRouteGeneric<{Body: EditTaskBody, Reply: null, Params: EditTaskParam}>>({
+    app.route<CustomRouteGeneric<{Body: EditTaskBody, Reply: EditTaskReply, Params: EditTaskParam}>>({
         method: 'POST',
         url: '/edit/:id',
         preHandler: authController.validateToken,

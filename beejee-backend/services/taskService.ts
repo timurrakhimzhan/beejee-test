@@ -24,10 +24,14 @@ export const createTask = async (data: Prisma.TaskUncheckedCreateInput) => {
 }
 
 export const editTask = async (id: number, data: Prisma.TaskUpdateInput, statusNumber: TaskStatusNumber) => {
-    const task = await taskRepository.editTask(id, {...data, status: statusNumberToEnum[statusNumber]});
-    return {
-        ...task,
-        status: statusEnumToNumber[task.status]
+    const task = await taskRepository.getTaskById(id);
+    if(!task) {
+        throw new Error(`Задача под номером ${id} отсутствует`)
     }
+    if(task.text !== data.text || task.status === 'TASK_FINISHED_EDITED' || task.status === 'TASK_CREATED_EDITED') {
+        statusNumber = statusNumber === 1 ? 11 : 10;
+    }
+    const editedTask = await taskRepository.editTask(id, {...data, status: statusNumberToEnum[statusNumber]});
+    return {...editedTask, status: statusEnumToNumber[editedTask.status]};
 }
 

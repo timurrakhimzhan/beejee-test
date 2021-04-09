@@ -1,14 +1,14 @@
 import {CustomRouteHandler} from "../types/controller";
-import prisma from "../prisma";
 import {
     CreateTaskBody,
     CreateTaskResponse,
     EditTaskBody,
     EditTaskParam,
     GetTasksResponse,
-    GetTasksQuery, GetTasksCountResponse
+    GetTasksQuery, GetTasksCountResponse, EditTaskReply
 } from "../types/task-schema";
 import * as taskService from "./../services/taskService";
+import { Task } from '@prisma/client';
 
 export const getTasks: CustomRouteHandler<{Querystring: GetTasksQuery, Reply: GetTasksResponse}> = async (req) => {
     const {sort_direction: sortDirection, sort_field: sortField, page} = req.query;
@@ -26,9 +26,8 @@ export const createTask: CustomRouteHandler<{Body: CreateTaskBody, Reply: Create
     return await taskService.createTask({username, email, text});
 }
 
-export const editTask: CustomRouteHandler<{Body: EditTaskBody, Params: EditTaskParam, Reply: null}> = async(req) => {
+export const editTask: CustomRouteHandler<{Body: EditTaskBody, Params: EditTaskParam, Reply: EditTaskReply}> = async(req) => {
     const { id } = req.params;
     const { text, status } = req.body;
-    await taskService.editTask(id, {text}, status);
-    return null;
+    return await taskService.editTask(id, {text}, status);
 }

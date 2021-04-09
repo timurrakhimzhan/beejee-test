@@ -50,10 +50,10 @@ type GetTasksCountResponse = {
 
 type EditTaskRequestBody = {
     text: string;
-    status: 10 | 11;
+    status: 1 | 0;
 }
 
-type EditTaskResponse = null;
+type EditTaskResponse = Task;
 
 interface ITaskActions extends ITaskApi {
     createTask: (body: CreateTaskRequestBody) => Promise<CustomResponse<CreateTaskResponse>>,
