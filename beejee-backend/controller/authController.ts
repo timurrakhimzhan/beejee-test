@@ -1,8 +1,7 @@
 import {CustomPreHandler, CustomRouteHandler} from "../types/controller";
 import {LoginBody, LoginResponse} from "../types/auth-schema";
 import jwt from 'jsonwebtoken';
-import {JWT_SECRET} from "../config";
-import CustomError from "../utils/CustomError";
+import {JWT_SECRET} from "../configs";
 
 export const validateToken: CustomPreHandler = async (req, res) => {
     const bearer = req.headers.authorization;
@@ -10,7 +9,7 @@ export const validateToken: CustomPreHandler = async (req, res) => {
         jwt.verify(bearer?.split(" ")[1] || '', JWT_SECRET);
     } catch(error) {
         res.code(401);
-        throw new CustomError({token: 'Not valid'});
+        throw {token: 'Токен истек'};
     }
 }
 
@@ -21,5 +20,5 @@ export const login: CustomRouteHandler<{Body: LoginBody, Reply: LoginResponse}> 
         return {token};
     }
     res.code(401);
-    throw new CustomError('Invalid username or password');
+    throw new Error('Неверный логин или пароль');
 }

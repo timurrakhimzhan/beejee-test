@@ -1,62 +1,14 @@
 import fastify, { FastifyError } from "fastify";
-import { Task } from '@prisma/client';
-import * as taskSchema from './route-schema/task-schema';
-import * as taskController from './controller/taskController';
-import * as authSchema from './route-schema/auth-schema';
-import * as authController from './controller/authController';
-import {
-    CreateTaskBody,
-    CreateTaskResponse,
-    EditTaskBody,
-    EditTaskParam,
-    GetTasksResponse,
-    GetTasksQuery, GetTasksCountResponse
-} from "./types/task-schema";
-import {BaseSchema} from "yup";
-import {LoginBody, LoginResponse} from "./types/auth-schema";
-import {BASE_URL, PORT} from "./config";
-import CustomError from "./utils/CustomError";
+import {BaseSchema, ValidationError} from "yup";
+import {BASE_URL, PORT} from "./configs";
+import CustomErrorSerializer from "./utils/CustomErrorSerializer";
+import routes from "./routes";
+import {CustomRouteGeneric} from "./types/controller";
+import CustomErrorObj from "./utils/CustomError";
 
-const fastifyApp = fastify({logger: false});
+let fastifyApp = fastify({logger: false});
 
-fastifyApp.register((app, opts, next) => {
-    app.route<{Querystring: GetTasksQuery, Reply: GetTasksResponse}>({
-        method: 'GET',
-        url: '/',
-        schema: taskSchema.getTasksSchema,
-        handler: taskController.getTasks
-    });
-
-    app.route<{Reply: GetTasksCountResponse}>({
-        method: 'GET',
-        url: '/count',
-        schema: taskSchema.getTasksSchema,
-        handler: taskController.getTasksCount
-    });
-
-    app.route<{Body: CreateTaskBody, Reply: CreateTaskResponse}>({
-        method: 'POST',
-        url: '/create',
-        schema: taskSchema.createTaskSchema,
-        handler: taskController.createTask
-    });
-
-    app.route<{Body: EditTaskBody, Reply: null, Params: EditTaskParam}>({
-        method: 'POST',
-        url: '/edit/:id',
-        preHandler: authController.validateToken,
-        schema: taskSchema.editTaskSchema,
-        handler: taskController.editTask
-    });
-
-    app.route<{Body: LoginBody, Reply: LoginResponse}>({
-        method: 'POST',
-        url: '/login',
-        schema: authSchema.loginSchema,
-        handler: authController.login
-    });
-    next()
-}, {prefix: BASE_URL})
+fastifyApp.register(routes, {prefix: BASE_URL})
 
 fastifyApp.setValidatorCompiler(({schema}: {schema: BaseSchema}) => {
     return (data) => {
@@ -64,10 +16,26 @@ fastifyApp.setValidatorCompiler(({schema}: {schema: BaseSchema}) => {
             const result = schema.validateSync(data, {abortEarly: false});
             return { value: result }
         } catch (e) {
-            return { error: new Error(e.errors.join(", ")) }
+            const error = e as ValidationError;
+            const errorObj = error.inner.reduce<{[key: string]: string}>((accum, err) => {
+                if(err.path && err.errors.length) {
+                    accum[err.path] = err.errors[0];
+                }
+                return accum;
+            }, {});
+            console.log(errorObj);
+            return {error: new CustomErrorObj(errorObj)}
         }
     }
 });
+
+fastifyApp.addHook<CustomRouteGeneric>('onRequest', async(req, res) => {
+    const {developer} = req.query;
+    if(!developer) {
+        res.code(401);
+        throw new Error("Не передано имя разработчика");
+    }
+})
 
 fastifyApp.addHook('preSerialization', async (request, response, payload) => {
     if(response.statusCode >= 200 && response.statusCode < 300) {
@@ -76,9 +44,9 @@ fastifyApp.addHook('preSerialization', async (request, response, payload) => {
             message: payload
         } : {status: 'ok'};
     }
-    let message: unknown | undefined;
-    if(payload instanceof CustomError) {
-        message = payload.message || payload.payload
+    let message: unknown;
+    if(payload instanceof CustomErrorSerializer) {
+        message = payload.error instanceof Error ? payload.error.message : payload.error;
     } else {
         message = payload;
     }
@@ -89,14 +57,7 @@ fastifyApp.addHook('preSerialization', async (request, response, payload) => {
 });
 
 fastifyApp.setErrorHandler<FastifyError>((async (error: FastifyError) => {
-    console.log(error);
-    if(error instanceof CustomError) {
-        return error;
-    }
-    if(error instanceof Error) {
-        return new CustomError(error.message);
-    }
-    return new CustomError(error);
+    return new CustomErrorSerializer(error);
 }))
 
 export default async function startApp() {

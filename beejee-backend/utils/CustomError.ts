@@ -1,12 +1,8 @@
-export default class CustomError {
-    message?: string;
-    payload?: object;
+export default class CustomErrorObj extends Error {
+    messageObj: object;
 
-    constructor(data?: string | object) {
-        if(typeof data === 'string') {
-            this.message = data;
-        } else {
-            this.payload = data;
-        }
+    constructor(data: object) {
+        super("Custom Error")
+        this.messageObj = data;
     }
 }

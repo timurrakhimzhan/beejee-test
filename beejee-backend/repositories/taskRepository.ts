@@ -1,6 +1,6 @@
 import {TaskSortDirection, TaskSortField} from "../types/task-schema";
 import prisma from "../prisma";
-import {TASKS_PER_PAGE} from "../config";
+import {TASKS_PER_PAGE} from "../configs";
 import { Prisma } from '@prisma/client';
 
 export const getTasks = async (sortField?: TaskSortField, sortDirection?: TaskSortDirection, page?: number) => {
