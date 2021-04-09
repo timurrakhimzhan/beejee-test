@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="973991ad-4247-452b-96b0-00e37d7670d5" name="Default Changelist" comment="" />
+    <list default="true" id="973991ad-4247-452b-96b0-00e37d7670d5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../beejee-backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../beejee-backend/Dockerfile" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,7 +72,7 @@
       <option name="presentableId" value="Default" />
       <updated>1617608998170</updated>
       <workItem from="1617608999567" duration="39792000" />
-      <workItem from="1617908246640" duration="2841000" />
+      <workItem from="1617908246640" duration="4682000" />
     </task>
     <servers />
   </component>

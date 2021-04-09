@@ -3,7 +3,7 @@ import {proxy, subscribe} from "valtio";
 
 const store = proxy(new GlobalStore());
 
-subscribe(store, () => {
+subscribe(store.user, () => {
     store.cache();
 })
 

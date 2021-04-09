@@ -36,7 +36,7 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
         } catch(error) {
             setServerError('Ошибка сервера')
         }
-    });
+    }, {enabled: false});
 
     useEffect(() => {
         if(!editingTaskId) {
