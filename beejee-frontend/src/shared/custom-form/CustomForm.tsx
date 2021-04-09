@@ -4,17 +4,10 @@ const CustomForm = styled.form`
   display: flex;
   flex-direction: column;
   width: auto;
-  .message {
+  .serverError {
     margin-left: auto;
     margin-right: auto;
     margin-top: 2px;
-    font-size: 0.6em;
-  }
-  .serverError {
-    color: darkred;
-  }
-  .serverMessage {
-    color: green;
   }
   .input-item {
     display: flex;
@@ -37,9 +30,7 @@ const CustomForm = styled.form`
       font-size: 0.9em;
     }
     .error {
-      color: darkred;
       margin-top: 2px;
-      font-size: 0.6em;
     }
   }
 `;

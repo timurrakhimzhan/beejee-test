@@ -8,6 +8,7 @@ import Space from "../../../../shared/space";
 import {useQuery, useQueryClient} from "react-query";
 import API from "../../../../api";
 import {API_TASKS} from "../../../../constants";
+import Message from "../../../../shared/message";
 
 type Props = {
     onClose: () => void;
@@ -20,6 +21,7 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
         defaultValues: {text: '', status: '10'},
     });
     const {errors} = formState;
+    const [success, setSuccess] = useState(false);
     const [serverError, setServerError] = useState('');
 
     const {refetch} = useQuery('editTask', async () => {
@@ -31,10 +33,10 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
             await API.task.actions.editTask(editingTaskId, {text, status: status === '10' ? 10 : 11 });
             const task = idTaskMap[editingTaskId];
             store.tasks.editTask({...task, text, status: status === '10' ? 10 : 11 });
-            onClose();
+            setSuccess(true);
             await queryClient.fetchQuery([API_TASKS, {currentPage, sortDirection, sortField}]);
         } catch(error) {
-            setServerError('Ошибка сервера')
+            setServerError('Необходимо авторизоваться');
         }
     }, {enabled: false});
 
@@ -49,11 +51,14 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
     }, [editingTaskId, idTaskMap, setValue]);
 
     const onSubmit = () => refetch();
+    if(success) {
+        return <Message error={false}>Задача успешно отредактирована</Message>
+    }
     return <CustomForm onSubmit={handleSubmit(onSubmit)}>
         <div className={'input-item'}>
             <label>Текст:</label>
             <textarea rows={3} {...register('text', {required: 'Пустое имя пользователя'})} />
-            {errors.text ? <span className={'error'}>{errors.text.message}</span> : null}
+            {errors.text ? <Message className={'error'} error>{errors.text.message}</Message> : null}
         </div>
         <Space height={'12px'} />
         <div className={'input-item'}>
@@ -71,7 +76,7 @@ const EditTaskForm: React.FC<Props> = ({onClose}) => {
         <CustomButton type={'submit'}>
             Сохранить
         </CustomButton>
-        {serverError ? <span className={'message serverError'}>{serverError}</span> : null}
+        {serverError ? <Message className={'serverError'} error>{serverError}</Message> : null}
     </CustomForm>
 }
 

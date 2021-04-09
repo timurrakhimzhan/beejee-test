@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="973991ad-4247-452b-96b0-00e37d7670d5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../beejee-backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../beejee-backend/Dockerfile" afterDir="false" />
-    </list>
+    <list default="true" id="973991ad-4247-452b-96b0-00e37d7670d5" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,8 +14,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="tsconfig.json" />
-        <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -72,7 +70,7 @@
       <option name="presentableId" value="Default" />
       <updated>1617608998170</updated>
       <workItem from="1617608999567" duration="39792000" />
-      <workItem from="1617908246640" duration="4682000" />
+      <workItem from="1617908246640" duration="7030000" />
     </task>
     <servers />
   </component>

@@ -8,8 +8,9 @@ import API from "../../../../api";
 import {API_TASKS, API_TASKS_COUNT} from "../../../../constants";
 import {useSnapshot} from "valtio";
 import store from "../../../../store";
+import Message from "../../../../shared/message/Message";
 
-const CreateTaskForm: React.FC<{onClose: () => void}> = ({onClose}) => {
+const CreateTaskForm: React.FC<{onClose: () => void}> = () => {
     const {register, handleSubmit, formState, getValues, reset} = useForm({
         defaultValues: {username: '', email: '', text: ''},
     });
@@ -18,14 +19,15 @@ const CreateTaskForm: React.FC<{onClose: () => void}> = ({onClose}) => {
     const {errors} = formState;
 
     const [serverError, setServerError] = useState<string>('');
+    const [success, setSuccess] = useState(false);
     const queryClient = useQueryClient();
     const {refetch} = useQuery('create-task', async () => {
         try {
             const {username, email, text} = getValues();
             await API.task.actions.createTask({username, email, text});
-            onClose();
             reset();
             setServerError('');
+            setSuccess(true);
             await queryClient.fetchQuery(API_TASKS_COUNT);
             await queryClient.fetchQuery([API_TASKS, {currentPage, sortField, sortDirection}]);
         } catch(error) {
@@ -33,11 +35,14 @@ const CreateTaskForm: React.FC<{onClose: () => void}> = ({onClose}) => {
         }
     }, {enabled: false, retry: false});
     const onSubmit = () => refetch();
+    if(success) {
+        return <Message error={false}>Задача успешно сохранена</Message>
+    }
     return <CustomForm onSubmit={handleSubmit(onSubmit)}>
         <div className={'input-item'}>
             <label>Имя пользователя:</label>
             <input type={'text'} {...register('username', {required: 'Пустое имя пользователя'})} />
-            {errors.username ? <span className={'error'}>{errors.username.message}</span> : null}
+            {errors.username ? <Message className={'error'} error>{errors.username.message}</Message> : null}
         </div>
         <Space height={'12px'} />
         <div className={'input-item'}>
@@ -45,17 +50,17 @@ const CreateTaskForm: React.FC<{onClose: () => void}> = ({onClose}) => {
             <input type={'text'} {...register('email', {
                 required: 'Пустая почта',
                 pattern: {value: /\S+@\S+\.\S+/, message: 'Невалидная почта' }})} />
-            {errors.email ? <span className={'error'}>{errors.email.message}</span> : null}
+            {errors.email ? <Message className={'error'} error>{errors.email.message}</Message> : null}
         </div>
         <Space height={'12px'} />
         <div className={'input-item'}>
             <label>Текст:</label>
             <textarea rows={3} {...register('text', {required: 'Пустой текст'})} />
-            {errors.text ? <span className={'error'}>{errors.text.message}</span> : null}
+            {errors.text ? <Message className={'error'} error>{errors.text.message}</Message> : null}
         </div>
         <Space height={'12px'} />
         <CustomButton type={'submit'}>Создать задачу</CustomButton>
-        {serverError ? <span className={'message serverError'}>{serverError}</span> : null}
+        {serverError ? <Message className={'serverError'} error>{serverError}</Message> : null}
     </CustomForm>
 }
 

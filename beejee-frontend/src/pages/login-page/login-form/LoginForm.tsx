@@ -7,6 +7,7 @@ import API from "../../../api";
 import store from "../../../store";
 import CustomForm from "../../../shared/custom-form";
 import CustomButton from "../../../shared/custom-button";
+import Message from "../../../shared/message";
 
 const LoginForm = () => {
     const {register, handleSubmit, formState, getValues} = useForm({
@@ -39,17 +40,17 @@ const LoginForm = () => {
             <div className={'input-item'}>
                 <label>Логин:</label>
                 <input type={'text'} {...register('username', {required: 'Логин пустой'})} />
-                {errors.username ? <span className={'error'}>{errors.username.message}</span> : null}
+                {errors.username ? <Message className={'error'} error>{errors.username.message}</Message> : null}
             </div>
             <Space height={'12px'} />
             <div className={'input-item'}>
                 <label>Пароль:</label>
                 <input type={'password'} {...register('password', {required: 'Пароль пустой'})} />
-                {errors.password ? <span className={'error'}>{errors.password.message}</span> : null}
+                {errors.password ? <Message className={'error'} error>{errors.password.message}</Message> : null}
             </div>
             <Space height={'12px'} />
             <CustomButton type={'submit'}>Авторизоваться</CustomButton>
-            {serverError ? <span className={'message serverError'}>{serverError}</span> : null}
+            {serverError ? <Message className={'serverError'} error>{serverError}</Message> : null}
         </CustomForm>
     </LoginFormWrapper>
 }
